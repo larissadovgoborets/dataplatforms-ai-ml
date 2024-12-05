@@ -1,0 +1,32 @@
+{
+	"name": "TransformCustomerData",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "transactions",
+						"type": "DatasetReference"
+					},
+					"name": "transactions"
+				}
+			],
+			"sinks": [],
+			"transformations": [],
+			"scriptLines": [
+				"source(output(",
+				"          TransactionID as integer,",
+				"          CustomerID as integer,",
+				"          TransactionDate as string,",
+				"          Amount as double,",
+				"          Category as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false,",
+				"     documentForm: 'arrayOfDocuments') ~> transactions"
+			]
+		}
+	}
+}

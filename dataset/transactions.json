@@ -1,0 +1,38 @@
+{
+	"name": "transactions",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "aidataplatformsynapse-WorkspaceDefaultStorage",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": "transactions.json",
+				"fileSystem": "transactions"
+			}
+		},
+		"schema": {
+			"type": "object",
+			"properties": {
+				"TransactionID": {
+					"type": "integer"
+				},
+				"CustomerID": {
+					"type": "integer"
+				},
+				"TransactionDate": {
+					"type": "string"
+				},
+				"Amount": {
+					"type": "number"
+				},
+				"Category": {
+					"type": "string"
+				}
+			}
+		}
+	}
+}
