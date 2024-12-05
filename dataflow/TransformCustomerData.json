@@ -10,6 +10,13 @@
 						"type": "DatasetReference"
 					},
 					"name": "transactions"
+				},
+				{
+					"dataset": {
+						"referenceName": "servey_data",
+						"type": "DatasetReference"
+					},
+					"name": "serveyData"
 				}
 			],
 			"sinks": [],
@@ -25,7 +32,17 @@
 				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     ignoreNoFilesFound: false,",
-				"     documentForm: 'arrayOfDocuments') ~> transactions"
+				"     documentForm: 'arrayOfDocuments') ~> transactions",
+				"source(output(",
+				"          SurveyID as string,",
+				"          CustomerID as string,",
+				"          SatisfactionScore as string,",
+				"          RecommendationLikelihood as string,",
+				"          Comments as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> serveyData"
 			]
 		}
 	}
