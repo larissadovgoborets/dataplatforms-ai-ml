@@ -13,10 +13,10 @@
 				},
 				{
 					"dataset": {
-						"referenceName": "servey_data",
+						"referenceName": "survey_data",
 						"type": "DatasetReference"
 					},
-					"name": "serveyData"
+					"name": "surveyData"
 				},
 				{
 					"dataset": {
@@ -34,7 +34,23 @@
 				}
 			],
 			"sinks": [],
-			"transformations": [],
+			"transformations": [
+				{
+					"name": "anonymizeCustomers"
+				},
+				{
+					"name": "cutomersInteractions"
+				},
+				{
+					"name": "customersInteractionsSurvey"
+				},
+				{
+					"name": "customersInteractionsSurveyTransactions"
+				},
+				{
+					"name": "typecastCustomerIdToInt"
+				}
+			],
 			"scriptLines": [
 				"source(output(",
 				"          TransactionID as integer,",
@@ -56,7 +72,7 @@
 				"     ),",
 				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
-				"     ignoreNoFilesFound: false) ~> serveyData",
+				"     ignoreNoFilesFound: false) ~> surveyData",
 				"source(output(",
 				"          CustomerID as string,",
 				"          InteractionDate as string,",
@@ -76,7 +92,28 @@
 				"     ),",
 				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
-				"     ignoreNoFilesFound: false) ~> customers"
+				"     ignoreNoFilesFound: false) ~> customers",
+				"customers select(mapColumn(",
+				"          CustomerID",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> anonymizeCustomers",
+				"anonymizeCustomers, interactions join(anonymizeCustomers@CustomerID == interactions@CustomerID,",
+				"     joinType:'left',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> cutomersInteractions",
+				"cutomersInteractions, surveyData join(anonymizeCustomers@CustomerID == surveyData@CustomerID,",
+				"     joinType:'left',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> customersInteractionsSurvey",
+				"transactions, customersInteractionsSurvey join(anonymizeCustomers@CustomerID == transactions@CustomerID,",
+				"     joinType:'left',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> customersInteractionsSurveyTransactions",
+				"anonymizeCustomers derive(CustomerID = toInteger(CustomerID)) ~> typecastCustomerIdToInt"
 			]
 		}
 	}

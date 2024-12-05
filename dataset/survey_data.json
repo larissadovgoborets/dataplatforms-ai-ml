@@ -1,5 +1,5 @@
 {
-	"name": "servey_data",
+	"name": "survey_data",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "aidataplatformsynapse-WorkspaceDefaultStorage",
