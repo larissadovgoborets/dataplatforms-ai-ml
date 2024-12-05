@@ -48,7 +48,7 @@
 					"name": "customersInteractionsSurveyTransactions"
 				},
 				{
-					"name": "typecastCustomerIdToInt"
+					"name": "removeObsoleteColumns"
 				}
 			],
 			"scriptLines": [
@@ -113,7 +113,18 @@
 				"     matchType:'exact',",
 				"     ignoreSpaces: false,",
 				"     broadcast: 'auto')~> customersInteractionsSurveyTransactions",
-				"anonymizeCustomers derive(CustomerID = toInteger(CustomerID)) ~> typecastCustomerIdToInt"
+				"customersInteractionsSurvey select(mapColumn(",
+				"          CustomerID = anonymizeCustomers@CustomerID,",
+				"          InteractionDate,",
+				"          Channel,",
+				"          InteractionType,",
+				"          ResolutionTime,",
+				"          SurveyID,",
+				"          SatisfactionScore,",
+				"          RecommendationLikelihood",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> removeObsoleteColumns"
 			]
 		}
 	}
