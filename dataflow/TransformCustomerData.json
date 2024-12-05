@@ -17,6 +17,13 @@
 						"type": "DatasetReference"
 					},
 					"name": "serveyData"
+				},
+				{
+					"dataset": {
+						"referenceName": "interactions",
+						"type": "DatasetReference"
+					},
+					"name": "interactions"
 				}
 			],
 			"sinks": [],
@@ -42,7 +49,17 @@
 				"     ),",
 				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
-				"     ignoreNoFilesFound: false) ~> serveyData"
+				"     ignoreNoFilesFound: false) ~> serveyData",
+				"source(output(",
+				"          CustomerID as string,",
+				"          InteractionDate as string,",
+				"          Channel as string,",
+				"          InteractionType as string,",
+				"          ResolutionTime as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> interactions"
 			]
 		}
 	}
