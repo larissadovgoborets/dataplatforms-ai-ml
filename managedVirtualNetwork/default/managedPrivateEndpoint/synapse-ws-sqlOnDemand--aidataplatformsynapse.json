@@ -1,0 +1,10 @@
+{
+	"name": "synapse-ws-sqlOnDemand--aidataplatformsynapse",
+	"properties": {
+		"privateLinkResourceId": "/subscriptions/7e1ddbb0-2073-4bbd-ada2-44558aca69ea/resourceGroups/aidataplatform/providers/Microsoft.Synapse/workspaces/aidataplatformsynapse",
+		"groupId": "sqlOnDemand",
+		"fqdns": [
+			"aidataplatformsynapse-ondemand.08c9b280-622f-4f11-af7c-330d2c28fd9d.sql.azuresynapse.net"
+		]
+	}
+}

@@ -1,0 +1,10 @@
+{
+	"name": "synapse-ws-custstgacct--aidataplatformsynapse-aidataplatformstorage",
+	"properties": {
+		"privateLinkResourceId": "/subscriptions/7e1ddbb0-2073-4bbd-ada2-44558aca69ea/resourceGroups/aidataplatform/providers/Microsoft.Storage/storageAccounts/aidataplatformstorage",
+		"groupId": "dfs",
+		"fqdns": [
+			"aidataplatformstorage.dfs.core.windows.net"
+		]
+	}
+}
