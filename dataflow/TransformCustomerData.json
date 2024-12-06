@@ -39,7 +39,7 @@
 						"referenceName": "joinedTables",
 						"type": "DatasetReference"
 					},
-					"name": "joinedTables"
+					"name": "loadAsFileToDataLake"
 				}
 			],
 			"transformations": [
@@ -47,13 +47,7 @@
 					"name": "anonymizeCustomers"
 				},
 				{
-					"name": "cutomersInteractions"
-				},
-				{
-					"name": "removeObsoleteColumns"
-				},
-				{
-					"name": "customersTransactions"
+					"name": "joinCustomers"
 				},
 				{
 					"name": "removeComment"
@@ -70,6 +64,12 @@
 				{
 					"name": "updateActive",
 					"description": "update Active column based on if customer interacted lately"
+				},
+				{
+					"name": "addSurveyData"
+				},
+				{
+					"name": "removeNullFromActive"
 				}
 			],
 			"scriptLines": [
@@ -119,28 +119,11 @@
 				"     ),",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true) ~> anonymizeCustomers",
-				"anonymizeCustomers, interactions join(anonymizeCustomers@CustomerID == interactions@CustomerID,",
-				"     joinType:'left',",
-				"     matchType:'exact',",
-				"     ignoreSpaces: false,",
-				"     broadcast: 'auto')~> cutomersInteractions",
-				"cutomersInteractions select(mapColumn(",
-				"          CustomerID = anonymizeCustomers@CustomerID,",
-				"          InteractionDate,",
-				"          Channel,",
-				"          InteractionType,",
-				"          ResolutionTime,",
-				"          SurveyID,",
-				"          SatisfactionScore,",
-				"          RecommendationLikelihood",
-				"     ),",
-				"     skipDuplicateMapInputs: true,",
-				"     skipDuplicateMapOutputs: true) ~> removeObsoleteColumns",
-				"transactions, customers join(transactions@CustomerID == customers@CustomerID,",
+				"transactions, anonymizeCustomers join(transactions@CustomerID == anonymizeCustomers@CustomerID,",
 				"     joinType:'outer',",
 				"     matchType:'exact',",
 				"     ignoreSpaces: false,",
-				"     broadcast: 'auto')~> customersTransactions",
+				"     broadcast: 'auto')~> joinCustomers",
 				"marketResearchData select(mapColumn(",
 				"          SurveyID,",
 				"          CustomerID,",
@@ -150,26 +133,31 @@
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true) ~> removeComment",
 				"addActive select(mapColumn(",
-				"          CustomerID = customers@CustomerID,",
+				"          CustomerID = anonymizeCustomers@CustomerID,",
 				"          Active",
 				"     ),",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true) ~> selectNecassaryColumns",
-				"customersTransactions derive(Active = iif(isNull(TransactionID), false(), true())) ~> addActive",
+				"joinCustomers derive(Active = iif(isNull(TransactionID), false(), true())) ~> addActive",
 				"selectNecassaryColumns, interactions join(selectNecassaryColumns@CustomerID == interactions@CustomerID,",
 				"     joinType:'outer',",
 				"     matchType:'exact',",
 				"     ignoreSpaces: false,",
 				"     broadcast: 'auto')~> joinInteractions",
 				"joinInteractions derive(Active = iif((isNull(Active) || Active == false()) && !isNull(InteractionDate), true(), Active)) ~> updateActive",
-				"removeObsoleteColumns sink(allowSchemaDrift: true,",
-				"     validateSchema: false,",
-				"     filePattern:'gathered_customer_data',",
+				"updateActive, removeComment join(selectNecassaryColumns@CustomerID == removeComment@CustomerID,",
+				"     joinType:'outer',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> addSurveyData",
+				"addSurveyData derive(Active = iif(isNull(Active), false(), Active)) ~> removeNullFromActive",
+				"removeNullFromActive sink(allowSchemaDrift: true,",
+				"     validateSchema: true,",
 				"     umask: 0022,",
 				"     preCommands: [],",
 				"     postCommands: [],",
 				"     skipDuplicateMapInputs: true,",
-				"     skipDuplicateMapOutputs: true) ~> joinedTables"
+				"     skipDuplicateMapOutputs: true) ~> loadAsFileToDataLake"
 			]
 		}
 	}
