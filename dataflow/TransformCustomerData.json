@@ -153,6 +153,7 @@
 				"addSurveyData derive(Active = iif(isNull(Active), false(), Active)) ~> removeNullFromActive",
 				"removeNullFromActive sink(allowSchemaDrift: true,",
 				"     validateSchema: true,",
+				"     filePattern:'data_for_analytics',",
 				"     umask: 0022,",
 				"     preCommands: [],",
 				"     postCommands: [],",
