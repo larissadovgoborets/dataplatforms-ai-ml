@@ -1,0 +1,23 @@
+{
+	"name": "joinedTables",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "aidataplatformsynapse-WorkspaceDefaultStorage",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": "gathered_customer_data.csv",
+				"fileSystem": "customerdata"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": []
+	}
+}
