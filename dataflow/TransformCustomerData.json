@@ -40,6 +40,13 @@
 						"type": "DatasetReference"
 					},
 					"name": "loadAsFileToDataLake"
+				},
+				{
+					"dataset": {
+						"referenceName": "transactionsSink",
+						"type": "DatasetReference"
+					},
+					"name": "copyToAnalytics"
 				}
 			],
 			"transformations": [
@@ -153,12 +160,20 @@
 				"addSurveyData derive(Active = iif(isNull(Active), false(), Active)) ~> removeNullFromActive",
 				"removeNullFromActive sink(allowSchemaDrift: true,",
 				"     validateSchema: true,",
-				"     filePattern:'data_for_analytics',",
+				"     filePattern:'gathered_customer_data[n]',",
 				"     umask: 0022,",
 				"     preCommands: [],",
 				"     postCommands: [],",
 				"     skipDuplicateMapInputs: true,",
-				"     skipDuplicateMapOutputs: true) ~> loadAsFileToDataLake"
+				"     skipDuplicateMapOutputs: true) ~> loadAsFileToDataLake",
+				"transactions sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     filePattern:'transactions_for_analysis[n]',",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> copyToAnalytics"
 			]
 		}
 	}
