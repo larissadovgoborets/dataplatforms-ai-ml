@@ -68,8 +68,7 @@
 				"annotations": []
 			},
 			"dependsOn": [
-				"[concat(variables('workspaceId'), '/dataflows/TransformCustomerData')]",
-				"[concat(variables('workspaceId'), '/integrationRuntimes/AutoResolveIntegrationRuntime')]"
+				"[concat(variables('workspaceId'), '/dataflows/TransformCustomerData')]"
 			]
 		},
 		{
@@ -184,7 +183,7 @@
 				"typeProperties": {
 					"location": {
 						"type": "AzureBlobFSLocation",
-						"fileName": "gathered_customer_data.csv",
+						"folderPath": "transformed_data",
 						"fileSystem": "customerdata"
 					},
 					"columnDelimiter": ",",
@@ -515,6 +514,7 @@
 						"addSurveyData derive(Active = iif(isNull(Active), false(), Active)) ~> removeNullFromActive",
 						"removeNullFromActive sink(allowSchemaDrift: true,",
 						"     validateSchema: true,",
+						"     filePattern:'data_for_analytics',",
 						"     umask: 0022,",
 						"     preCommands: [],",
 						"     postCommands: [],",
